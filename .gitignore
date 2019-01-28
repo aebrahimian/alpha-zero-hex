@@ -1,0 +1,9 @@
+*.pyc
+.DS_Store
+
+temp
+/.project
+/.pydevproject
+# For PyCharm users
+.idea/
+env/
