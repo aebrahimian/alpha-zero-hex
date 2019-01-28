@@ -14,8 +14,8 @@ args = dotdict({
     'cpuct': 1,
 
     'checkpoint': './pretrained_models/hex/pytorch/temp/',
-    'load_model': False,
-    'load_folder_file': ('./pretrained_models/hex/pytorch/dev/6x100','best.pth.tar'),
+    'load_model': True,
+    'load_folder_file': ('./pretrained_models/hex/pytorch/dev/6x100','checkpoint_26.pth.tar'),
     'numItersForTrainExamplesHistory': 20,
 
 })
