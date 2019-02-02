@@ -25,8 +25,8 @@ abps = [None, abp1, abp2, abp3]
 res = {'random': {}, 'abp1': {}, 'abp2': {}}
 
 num = 10 
+cps = [1, 2, 5, 9, 17, 24, 36, 50, 63, 74, 85, 95, 99]
 
-cps = [1, 2, 3]
 for cp in cps:
 	n1 = NNet(g)
 	n1.load_checkpoint('./pretrained_models/hex/pytorch/temp/','checkpoint_{}.pth.tar'.format(cp))
@@ -56,4 +56,8 @@ for cp in cps:
 		print('sim count alpha beta', player.sim_count, 'avg game', player.sim_count/num, 'avg turn', player.sim_count/total_turn)
 		res['abp{}'.format(depth)][cp] = (az_won, num)
 
-print res
+	print('current res')
+	print(res)
+
+print('final res')
+print(res)
