@@ -10,6 +10,7 @@ hexagons are stored and manipulated as (x,y) tuples.
 x is the column, y is the row.
 '''
 import collections
+from heapq import *
 
 
 class Board():
@@ -59,16 +60,21 @@ class Board():
             return False
         return True
 
-    def get_neighbors(self, pos, color):
+    def get_neighbors(self, pos, color, with_weights=False):
         x, y = pos
         neighbors = []
         for x_offset, y_offset in self.__directions:
             nx, ny = (x + x_offset, y + y_offset)
-            if self.is_valid_pos(nx, ny) and self.pieces[nx][ny] == color:
-                neighbors.append((nx, ny))
+            if self.is_valid_pos(nx, ny):
+                if with_weights:
+                    if self.pieces[nx][ny] != -color:
+                        neighbors.append(((nx, ny), int(self.pieces[nx][ny] == 0)))
+                else:
+                    if self.pieces[nx][ny] == color:
+                        neighbors.append((nx, ny))
 
         return neighbors
-
+       
     def is_connected(self, root, color):
         if self.pieces[root[0]][root[1]] != color:
             return False
@@ -83,4 +89,45 @@ class Board():
                     queue.append(neighbor)
 
         return False
+
+    def count_to_connect(self):
+        shortest = (float('inf'), None)
+        for y in range(self.n):
+            if self.pieces[0][y] == -1:
+                continue
+            cost, path = self.shortest_path((0, y))
+            if cost < shortest[0]:
+                shortest = (cost, path)
+        
+        if shortest[0] == float('inf'):
+            return (self.n**2, shortest[1])
+
+        return shortest
+
+   
+    def shortest_path(self, source):
+        """ 
+        dijkstra algorithm based on https://gist.github.com/kachayev/5990802
+        return shortest path to other side for player 1
+        """        
+        source_cost = int(self.pieces[source[0]][source[1]] == 0)
+        shortest = (float("inf"), None)
+        q, seen, mins = [(source_cost, source, [])], set(), {source: source_cost}
+        while q:
+            (cost,v1,path) = heappop(q)
+            if v1 not in seen:
+                seen.add(v1)
+                path = [*path, v1]
+                if v1[0] == self.n-1 and cost < shortest[0]:
+                    shortest = (cost, path)
+
+                for v2, c in self.get_neighbors(v1, 1, with_weights=True):
+                    if v2 in seen: continue
+                    prev = mins.get(v2, None)
+                    next = cost + c
+                    if prev is None or next < prev:
+                        mins[v2] = next
+                        heappush(q, (next, v2, path))
+
+        return shortest
 

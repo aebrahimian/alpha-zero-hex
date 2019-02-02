@@ -4,6 +4,8 @@ sys.path.append('..')
 from Game import Game
 from .HexLogic import Board
 import numpy as np
+from collections import defaultdict
+from heapq import *
 
 
 class HexGame(Game):
@@ -102,14 +104,33 @@ class HexGame(Game):
         # 8x8 numpy array (canonical board)
         return board.tostring()
 
+
+    def getScore(self, board):
+        """ 
+        idea from https://towardsdatascience.com/hex-creating-intelligent-adversaries-part-2-heuristics-dijkstras-algorithm-597e4dcacf93
+        heuristic evaluation function for minimax
+        score = player 1 remaining piece to reach other side - player -1 remaining piece
+        """        
+        b = Board(self.n)
+
+        b.pieces = board
+        my_count, my_path = b.count_to_connect()
+
+        b.pieces = self.getCanonicalForm(board, -1)
+        enemy_count, enemy_path = b.count_to_connect()
+
+        # print('my count', my_count, 'enemy count', enemy_count) 
+        return enemy_count - my_count
+
+
 def display(board):
     n = board.shape[0]
 
-    print("   ", "B  " * n, "\n   ", end="")
+    print("   ", "B  " * n, "\n    ", end="")
     for y in range(n):
         print (y, "\\",end="")
     print("")
-    print(" -----------------------")
+    print("", "----" * n)
     for y in range(n):
         print(" " * y, "W", y, "\\",end="")    # print the row #
         for x in range(n):
@@ -121,7 +142,11 @@ def display(board):
                     print("-",end="")
                 else:
                     print("-  ",end="")
-        print("\\ W")
+        print("\\ {} W".format(y))
 
-    print(" " * n, "-----------------------")
-    print("    ", " " * n, "B  " * n)
+    print(" " * n, "----" * n)
+    print("      ", " " * n, end="")
+    for y in range(n):
+        print (y, "\\",end="")
+    print("")        
+    print("      ", " " * n, "B  " * n)

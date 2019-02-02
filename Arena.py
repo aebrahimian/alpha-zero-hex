@@ -6,7 +6,7 @@ class Arena():
     """
     An Arena class where any 2 agents can be pit against each other.
     """
-    def __init__(self, player1, player2, game, display=None):
+    def __init__(self, player1, player2, game, display=None, mcts=None, ab=None):
         """
         Input:
             player 1,2: two functions that takes board as input, return action
@@ -23,6 +23,10 @@ class Arena():
         self.game = game
         self.display = display
 
+        self.total_turn = 0
+        self.mcts = mcts
+        self.ab = ab
+
     def playGame(self, verbose=False):
         """
         Executes one episode of a game.
@@ -37,9 +41,8 @@ class Arena():
         curPlayer = 1
         board = self.game.getInitBoard()
         it = 0
-        while self.game.getGameEnded(board, curPlayer)==0:
+        while self.game.getGameEnded(board, curPlayer)==0:          
             it+=1
-            action = players[curPlayer+1](board, curPlayer)
             
             if verbose:
                 assert(self.display)
@@ -48,6 +51,10 @@ class Arena():
                 # print('connn', curPlayer)
                 # self.display(self.game.getCanonicalForm(board, curPlayer))
                 # print(board)            
+
+            action = players[curPlayer+1](board, curPlayer)
+
+            if verbose:
                 print(int(action/self.game.n), action%self.game.n)
 
             valids = self.game.getValidMoves(self.game.getCanonicalForm(board, curPlayer),1)
@@ -58,10 +65,17 @@ class Arena():
             board, _ = self.game.getNextState(self.game.getCanonicalForm(board, curPlayer), 1, action)
             board = self.game.getOriginalForm(board, curPlayer)
             curPlayer = -curPlayer
+            
+            if self.mcts is not None and self.ab is not None:
+                print('player {} mcts {} {} ab {} {}'.format(-curPlayer, self.mcts.sim_count, self.mcts.sim_count/it, self.ab.sim_count, self.ab.sim_count/it))            
+
         if verbose:
             assert(self.display)
             print("Game over: Turn ", str(it), "Result ", str(self.game.getGameEnded(board, 1)))
             self.display(board)
+
+        self.total_turn += it                        
+        # print('player {} mcts {} {} ab {} {}'.format(-curPlayer, self.mcts.sim_count, self.mcts.sim_count/it, self.ab.sim_count, self.ab.sim_count/it))
         return self.game.getGameEnded(board, 1)
 
     def playGames(self, num, verbose=False):
