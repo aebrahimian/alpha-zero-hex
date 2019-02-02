@@ -32,7 +32,7 @@ full_cps = [1, 2, 3, 5, 7, 8, 9, 11, 13, 17, 21, 24, 28, 29, 30, 31, 33, 36, 38,
 
 for cp in cps:
 	n1 = NNet(g)
-	n1.load_checkpoint('./pretrained_models/hex/pytorch/temp/','checkpoint_{}.pth.tar'.format(cp))
+	n1.load_checkpoint('./pretrained_models/hex/pytorch/temp/','Copy of checkpoint_{}.pth.tar'.format(cp))
 	args1 = dotdict({'numMCTSSims': 50, 'cpuct':1.0})
 	mcts = MCTS(g, n1, args1)	
 	azp = lambda x, player: np.argmax(mcts.getActionProb(x, player, temp=0))
