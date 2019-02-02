@@ -22,7 +22,7 @@ abp2 = AlphaBetaPlayer(g, maxDepth=2)
 abp3 = AlphaBetaPlayer(g, maxDepth=3)
 abps = [None, abp1, abp2, abp3]
 
-res = {'random': {}, 'abp1': {}, 'abp2': {}}
+res = {'random': {}, 'abp1': {}, 'abp2': {}, 'abp3': {}}
 
 num = 10 
 cps = [1, 2, 5, 9, 17, 24, 36, 50, 63, 74, 85, 95, 99]
