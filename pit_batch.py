@@ -30,22 +30,22 @@ full_cps = [1, 2, 3, 5, 7, 8, 9, 11, 13, 17, 21, 24, 28, 29, 30, 31, 33, 36, 38,
 			39, 40, 41, 42, 44, 48, 50 ,57, 59, 60, 61, 63, 67, 68, 69, 71, 72, 73,\
 			74, 78, 79, 85, 89, 91, 95, 99]
 
-for cp in cps:
+for cp in full_cps:
 	n1 = NNet(g)
 	n1.load_checkpoint('./pretrained_models/hex/pytorch/temp/','Copy of checkpoint_{}.pth.tar'.format(cp))
 	args1 = dotdict({'numMCTSSims': 50, 'cpuct':1.0})
 	mcts = MCTS(g, n1, args1)	
 	azp = lambda x, player: np.argmax(mcts.getActionProb(x, player, temp=0))
 
-	# arena = Arena.Arena(azp, rp.play, g, display=display)
-	# print('=========== playing check point {} vs {} ==========='.format(cp, 'random'))
-	# az_won, rp_won, draws = arena.playGames(num, verbose=True)
-	# print((az_won, rp_won, draws))
-	# total_turn = arena.total_turn
-	# print('sim count MCTS all', mcts.sim_count, 'avg game', mcts.sim_count/num, 'avg turn', mcts.sim_count/total_turn)
-	# res['random'][cp] = (az_won, num)
+	arena = Arena.Arena(azp, rp.play, g, display=display)
+	print('=========== playing check point {} vs {} ==========='.format(cp, 'random'))
+	az_won, rp_won, draws = arena.playGames(num, verbose=True)
+	print((az_won, rp_won, draws))
+	total_turn = arena.total_turn
+	print('sim count MCTS all', mcts.sim_count, 'avg game', mcts.sim_count/num, 'avg turn', mcts.sim_count/total_turn)
+	res['random'][cp] = (az_won, num)
 
-	for depth in [3]:
+	for depth in [1, 2]:
 		player = abps[depth]
 		player.sim_count = 0
 		mcts.sim_count = 0
