@@ -29,8 +29,10 @@ cps = [1, 2, 5, 9, 17, 24, 36, 50, 63, 74, 85, 95, 99]
 full_cps = [1, 2, 3, 5, 7, 8, 9, 11, 13, 17, 21, 24, 28, 29, 30, 31, 33, 36, 38,\
 			39, 40, 41, 42, 44, 48, 50 ,57, 59, 60, 61, 63, 67, 68, 69, 71, 72, 73,\
 			74, 78, 79, 85, 89, 91, 95, 99]
+cur_cps = [36, 38, 39, 40, 41, 42, 44, 48, 50 ,57, 59, 60, 61, 63, 67, 68, 69, 71,\
+		   72, 73, 74, 78, 79, 85, 89, 91, 95, 99]
 
-for cp in full_cps:
+for cp in cur_cps:
 	n1 = NNet(g)
 	n1.load_checkpoint('./pretrained_models/hex/pytorch/temp/','Copy of checkpoint_{}.pth.tar'.format(cp))
 	args1 = dotdict({'numMCTSSims': 50, 'cpuct':1.0})
